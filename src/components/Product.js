@@ -2,25 +2,31 @@ import Image from "next/image";
 import React, {useState} from "react";
 import {StarIcon} from "@heroicons/react/solid";
 import Currency from "react-currency-formatter";
-const MAX_RATING = 5;
-const MIN_RATING = 3;
-
+import { useDispatch } from "react-redux";
+import { addToBasket } from "../slices/basketSlice";
+const MAX_RATING = 4;
+const MIN_RATING = 2; 
 function Product ({id,title,price,description,category,image}){
-    
+    const dispatch = useDispatch();
     const [rating] = useState(Math.ceil(Math.random() * (MAX_RATING - MIN_RATING + 1)) + MIN_RATING);
-    
-    const [hasPrime] = useState(Math.random() < 3);
+    const [hasPrime] = useState(Math.random());
+    const addItemToBasket = () => {
+        const product = {
+            id,title,price,rating,description,category,image,hasPrime
+        };
+        dispatch(addToBasket(product))
+
+
+    }
     return (
-        <div className="relative flex flex-col m-5 bg-white z-30 p-10">
+        <div className="relative flex flex-col m-5 bg-white z-30 p-10 rounded-2xl">
             <p className="absolute top-2 right-2 text-xs italic text-gray-400">{category}</p>
             <Image src={image} height={200} width={200} objectfit="contain" align-items="center"/>
             <h4 className="my-3">{title}</h4>
             <div className="flex">
                 {Array(parseInt(rating)).fill().map((_,i)=>(
-                    <StarIcon className="h-5 text-yellow-500"/>
-            
+                    <StarIcon className="h-5 text-yellow-400"/>
                 ))}
-            
             </div>
             <p className="text-xs my-2 line-clamp-2" >{description}</p>
             <div className="mb-5">
@@ -32,11 +38,9 @@ function Product ({id,title,price,description,category,image}){
             <img className="w-12" src = "https://png.pngtree.com/png-clipart/20210311/original/pngtree-sale-logo-png-image_6019472.jpg" alt=""/>
             {/* <p className="text-xs text-gray-500">Flat <strong>{${randomNumber}}%</strong>  OFF</p> */}
             <p className="text-xs text-gray-500">Flat 10-50% OFF</p>
-
-            </div>
+            </div>  
             )}
-            <button className="mt-auto button"> Add to Basket</button>
-
+            <button onClick={addItemToBasket}className="mt-auto button rounded-2xl"> Add to Basket</button>
         </div>
     );
 }
